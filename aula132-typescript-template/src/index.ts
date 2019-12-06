@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { writeFile, readFile } from 'fs';
 
-const database: string = "users.json";
+const jsonFile: string = "users.json";
 
 type movements = {
     value: number, 
@@ -17,15 +17,13 @@ type users = {
     statement: movements[],
 };
 
-let users: users[] = [
-    {
-        name: "Severo", 
-        cpf: 2, 
-        birth: moment(),
-        accountBalance: 0,
-        statement: [],
-    },
-];
+let users: users = {
+    name: "Severo", 
+    cpf: 2, 
+    birth: moment(),
+    accountBalance: 0,
+    statement: [],
+};
 
 
 const getAllAccounts = (err: any, data:Buffer) => {
@@ -34,16 +32,21 @@ const getAllAccounts = (err: any, data:Buffer) => {
         return;
     };
 
-    const accountsJSONContent: any = [data.toString(), ...users];
     
-    accountsJSONContent.map((account: users) => {
-        createAcount(account)
-    });
+    const accountsJSONContent: any = data.toString();
+    const database = JSON.parse(accountsJSONContent);
+
+    const newDatabase = database.accounts.push(users)
+    console.log(newDatabase);    
+    
+    // JSON.parse(newDatabase);
+    // JSON.stringify(newDatabase);
+    // createAcount(newDatabase);
 };
 
-const createAcount = (users: users): any => {
+const createAcount = (users: string): any => {
 
-    writeFile(database, users, (err: any) => {
+    writeFile(jsonFile, users, (err: any) => {
         if(err){
             console.error(err);
             return;
@@ -51,4 +54,4 @@ const createAcount = (users: users): any => {
     });
 };
 
-readFile(database, getAllAccounts);
+readFile(jsonFile, getAllAccounts);

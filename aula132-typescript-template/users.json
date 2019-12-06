@@ -1,8 +1,4 @@
 
 {
-    "name": "Pedro",
-    "cpf": "1", 
-    "birth": "10/10/2010",
-    "accountBalance": "0",
-    "statement": "[]"
+    "accounts": []
 }
