@@ -17,10 +17,10 @@ type users = {
     statement: movements[],
 };
 
-let users: users = {
+let newUser: users = {
     name: "Severo", 
     cpf: 2, 
-    birth: moment(),
+    birth: moment("07/12/2001", "DD/MM/YYYY"),
     accountBalance: 0,
     statement: [],
 };
@@ -32,12 +32,19 @@ const getAllAccounts = (err: any, data:Buffer) => {
         return;
     };
 
-    const accountsJSONContent: any = data.toString();
-    const database = JSON.parse(accountsJSONContent);
-    database.accounts.push(users)    
-    const newDatabase = JSON.stringify(database);
-        
-    createAcount(newDatabase);
+    const today: moment.Moment = moment()
+    const eighteenYearsInDays = 6574
+
+    if (today.diff(newUser.birth,"days") >= eighteenYearsInDays) {
+        const accountsJSONContent: any = data.toString();
+        const database = JSON.parse(accountsJSONContent);
+        database.accounts.push(newUser)    
+        const newDatabase = JSON.stringify(database);
+            
+        createAcount(newDatabase);
+    } else {
+        console.log("É proibida a criação de contas para menores de idade")
+    };
 };
 
 const createAcount = (newDatabase: string): any => {
@@ -50,6 +57,4 @@ const createAcount = (newDatabase: string): any => {
     });
 };
 
-// readFile(jsonFile, getAllAccounts);
-
-const 
+readFile(jsonFile, getAllAccounts);
