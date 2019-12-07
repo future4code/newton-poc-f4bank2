@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node build/test.js --target es6",
-    "index": "tsc && node build/index.js --target es6"
+    "index": "tsc && node build/index.js --target es6",
+    "dates": "tsc && node build/dates.js --target es6"
   },
   "author": "",
   "license": "ISC",

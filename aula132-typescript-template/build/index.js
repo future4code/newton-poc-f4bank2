@@ -18,11 +18,12 @@ const getAllAccounts = (err, data) => {
     ;
     const accountsJSONContent = data.toString();
     const database = JSON.parse(accountsJSONContent);
-    const newDatabase = database.accounts.push(users);
-    console.log(newDatabase);
+    database.accounts.push(users);
+    const newDatabase = JSON.stringify(database);
+    createAcount(newDatabase);
 };
-const createAcount = (users) => {
-    fs_1.writeFile(jsonFile, users, (err) => {
+const createAcount = (newDatabase) => {
+    fs_1.writeFile(jsonFile, newDatabase, (err) => {
         if (err) {
             console.error(err);
             return;

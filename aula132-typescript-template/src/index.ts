@@ -32,21 +32,17 @@ const getAllAccounts = (err: any, data:Buffer) => {
         return;
     };
 
-    
     const accountsJSONContent: any = data.toString();
     const database = JSON.parse(accountsJSONContent);
-
-    const newDatabase = database.accounts.push(users)
-    console.log(newDatabase);    
-    
-    // JSON.parse(newDatabase);
-    // JSON.stringify(newDatabase);
-    // createAcount(newDatabase);
+    database.accounts.push(users)    
+    const newDatabase = JSON.stringify(database);
+        
+    createAcount(newDatabase);
 };
 
-const createAcount = (users: string): any => {
+const createAcount = (newDatabase: string): any => {
 
-    writeFile(jsonFile, users, (err: any) => {
+    writeFile(jsonFile, newDatabase, (err: any) => {
         if(err){
             console.error(err);
             return;
@@ -54,4 +50,6 @@ const createAcount = (users: string): any => {
     });
 };
 
-readFile(jsonFile, getAllAccounts);
+// readFile(jsonFile, getAllAccounts);
+
+const 
