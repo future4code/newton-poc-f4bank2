@@ -5,7 +5,7 @@ const fs_1 = require("fs");
 const jsonFile = "users.json";
 let newUser = {
     name: "Severo",
-    cpf: 2,
+    cpf: 4,
     birth: moment("07/12/2001", "DD/MM/YYYY"),
     accountBalance: 0,
     statement: [],
@@ -21,6 +21,14 @@ const getAllAccounts = (err, data) => {
     if (today.diff(newUser.birth, "days") >= eighteenYearsInDays) {
         const accountsJSONContent = data.toString();
         const database = JSON.parse(accountsJSONContent);
+        for (let user of database.accounts) {
+            if (user.cpf === newUser.cpf) {
+                console.log("CPF já cadastrado");
+                return;
+            }
+            ;
+        }
+        ;
         database.accounts.push(newUser);
         const newDatabase = JSON.stringify(database);
         createAcount(newDatabase);
