@@ -70,5 +70,40 @@ const getBalance = (err, data) => {
     ;
     console.log("Conta bancária não encontrada.");
 };
-fs_1.readFile(jsonFile, getBalance);
+const addBalance = (err, data) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    ;
+    const depositOrder = {
+        name: "Severo",
+        cpf: 2,
+        value: 50,
+        date: moment(),
+        description: "Depósito em dinheiro"
+    };
+    const accountsJSONContent = data.toString();
+    const database = JSON.parse(accountsJSONContent);
+    console.log(database);
+    for (let user of database.accounts) {
+        if (user.name === depositOrder.name && user.cpf === depositOrder.cpf) {
+            user.accountBalance = user.accountBalance + depositOrder.value;
+            console.log("Seu novo saldo é: ", user.accountBalance);
+            const newStatementInput = {
+                value: depositOrder.value,
+                date: depositOrder.date,
+                description: depositOrder.description,
+            };
+            user.statement.push(newStatementInput);
+            const newDatabase = JSON.stringify(database);
+            createAcount(newDatabase);
+            return;
+        }
+        ;
+    }
+    ;
+    console.log("Conta bancária não encontrada.");
+};
+fs_1.readFile(jsonFile, addBalance);
 //# sourceMappingURL=index.js.map
