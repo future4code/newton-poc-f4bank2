@@ -1,1 +1,1 @@
-{"accounts":[{"name":"Severo","cpf":2,"birth":"2001-12-07T02:00:00.000Z","accountBalance":0,"statement":[]},{"name":"Severo","cpf":3,"birth":"2001-12-07T02:00:00.000Z","accountBalance":0,"statement":[]},{"name":"Severo","cpf":4,"birth":"2001-12-07T02:00:00.000Z","accountBalance":0,"statement":[]}]}
+{"accounts":[{"name":"Pedro","cpf":1,"birth":"2001-12-07T02:00:00.000Z","accountBalance":10,"statement":[]},{"name":"Severo","cpf":2,"birth":"2001-12-07T02:00:00.000Z","accountBalance":0,"statement":[]}]}

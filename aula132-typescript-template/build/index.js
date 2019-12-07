@@ -5,7 +5,7 @@ const fs_1 = require("fs");
 const jsonFile = "users.json";
 let newUser = {
     name: "Severo",
-    cpf: 4,
+    cpf: 2,
     birth: moment("07/12/2001", "DD/MM/YYYY"),
     accountBalance: 0,
     statement: [],
@@ -47,5 +47,28 @@ const createAcount = (newDatabase) => {
         ;
     });
 };
-fs_1.readFile(jsonFile, getAllAccounts);
+const getBalance = (err, data) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    ;
+    const consultation = {
+        name: "Severo",
+        cpf: 4,
+    };
+    const accountsJSONContent = data.toString();
+    const database = JSON.parse(accountsJSONContent);
+    console.log(database);
+    for (let user of database.accounts) {
+        if (user.name === consultation.name && user.cpf === consultation.cpf) {
+            console.log("Seu saldo é: ", user.accountBalance);
+            return;
+        }
+        ;
+    }
+    ;
+    console.log("Conta bancária não encontrada.");
+};
+fs_1.readFile(jsonFile, getBalance);
 //# sourceMappingURL=index.js.map
