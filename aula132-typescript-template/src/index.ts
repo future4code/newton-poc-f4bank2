@@ -1,6 +1,5 @@
 import * as moment from 'moment';
 import { writeFile, readFile } from 'fs';
-import { deserialize } from 'v8';
 
 const jsonFile: string = "users.json";
 
@@ -99,7 +98,12 @@ type depositData = {
     value: number,
     date: moment.Moment,
     description: string
+};
 
+type statementInput = {
+    value: number,
+    date: moment.Moment,
+    description: string
 };
 
 const addBalance = (err: any, data:Buffer) => {
@@ -114,12 +118,6 @@ const addBalance = (err: any, data:Buffer) => {
         value: 50,
         date: moment(),
         description: "Depósito em dinheiro"
-    };
-
-    type statementInput = {
-        value: number,
-        date: moment.Moment,
-        description: string
     };
 
     const accountsJSONContent: any = data.toString();
@@ -142,6 +140,58 @@ const addBalance = (err: any, data:Buffer) => {
         };
     };
     console.log("Conta bancária não encontrada.");
-}
+};
 
-readFile (jsonFile, addBalance);
+const payBill = (err: any, data:Buffer) => {
+    if(err){
+        console.error(err);
+        return;
+    };
+
+    const paymentOrder: statementInput = {
+        value: 500,
+        date: moment("06/01/2020", "DD/MM/YYYY"),
+        description: "Depósito em dinheiro"
+    };
+
+    const userWhosPay = {
+        name: "Pedro",
+        cpf: 1
+    };
+
+    const today = moment()
+
+    if (paymentOrder.date.unix() >= today.unix()) {
+        const accountsJSONContent: any = data.toString();
+        const database = JSON.parse(accountsJSONContent);
+        if (database.accountBalance >= paymentOrder.value) {
+            for (let user of database.accounts) {
+                if (user.name === userWhosPay.name && user.cpf === userWhosPay.cpf) {            
+                    if (!paymentOrder.date) {
+                        paymentOrder.date = moment();
+                    };
+
+                    const newPaymentOrder: statementInput = {
+                        value: paymentOrder.value,
+                        date: paymentOrder.date,
+                        description: paymentOrder.description,
+                    };
+                    
+                    user.statement.push(newPaymentOrder);    
+                    const newDatabase = JSON.stringify(database);
+                    createAcount(newDatabase);
+                    return
+                };
+            };
+        } else {
+            console.log("Saldo insuficiente.");
+            return;
+        };
+    } else {
+        console.log("Data de pagamento inválida.");
+        return;
+    };
+    console.log("Conta bancária não encontrada.");
+};
+
+readFile (jsonFile, payBill);

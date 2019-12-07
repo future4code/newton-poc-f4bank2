@@ -105,5 +105,58 @@ const addBalance = (err, data) => {
     ;
     console.log("Conta bancária não encontrada.");
 };
-fs_1.readFile(jsonFile, addBalance);
+const payBill = (err, data) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    ;
+    const paymentOrder = {
+        value: 500,
+        date: moment("06/01/2020", "DD/MM/YYYY"),
+        description: "Depósito em dinheiro"
+    };
+    const userWhosPay = {
+        name: "Pedro",
+        cpf: 1
+    };
+    const today = moment();
+    if (paymentOrder.date.unix() >= today.unix()) {
+        const accountsJSONContent = data.toString();
+        const database = JSON.parse(accountsJSONContent);
+        if (database.accountBalance >= paymentOrder.value) {
+            for (let user of database.accounts) {
+                if (user.name === userWhosPay.name && user.cpf === userWhosPay.cpf) {
+                    if (!paymentOrder.date) {
+                        paymentOrder.date = moment();
+                    }
+                    ;
+                    const newPaymentOrder = {
+                        value: paymentOrder.value,
+                        date: paymentOrder.date,
+                        description: paymentOrder.description,
+                    };
+                    user.statement.push(newPaymentOrder);
+                    const newDatabase = JSON.stringify(database);
+                    createAcount(newDatabase);
+                    return;
+                }
+                ;
+            }
+            ;
+        }
+        else {
+            console.log("Saldo insuficiente");
+            return;
+        }
+        ;
+    }
+    else {
+        console.log("Data de pagamento inválida.");
+        return;
+    }
+    ;
+    console.log("Conta bancária não encontrada.");
+};
+fs_1.readFile(jsonFile, payBill);
 //# sourceMappingURL=index.js.map
