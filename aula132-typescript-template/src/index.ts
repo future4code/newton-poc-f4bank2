@@ -136,7 +136,7 @@ const addBalance = (err: any, data:Buffer) => {
             user.statement.push(newStatementInput);    
             const newDatabase = JSON.stringify(database);
             createAcount(newDatabase);
-            return
+            return;
         };
     };
     console.log("Conta bancária não encontrada.");
@@ -159,7 +159,7 @@ const payBill = (err: any, data:Buffer) => {
         cpf: 1
     };
 
-    const today = moment()
+    const today = moment();
 
     if (paymentOrder.date.unix() >= today.unix()) {
         const accountsJSONContent: any = data.toString();
@@ -180,7 +180,7 @@ const payBill = (err: any, data:Buffer) => {
                     user.statement.push(newPaymentOrder);    
                     const newDatabase = JSON.stringify(database);
                     createAcount(newDatabase);
-                    return
+                    return;
                 };
             };
         } else {
@@ -194,4 +194,64 @@ const payBill = (err: any, data:Buffer) => {
     console.log("Conta bancária não encontrada.");
 };
 
-readFile (jsonFile, payBill);
+type transferData = {
+    nameFrom: string,
+    cpfFrom: number,
+    value: number,
+    date: moment.Moment,
+    nameTo: string,
+    cpfTo: number,
+    descriptionPayer: string,
+    descriptionReceiver: string,
+};
+
+
+const performTransfer = (err: any, data:Buffer) => {
+    if(err){
+        console.error(err);
+        return;
+    };
+
+    const newTransfer: transferData = {
+        nameFrom: "Severo",
+        cpfFrom: 2,
+        value: 7,
+        date: moment(),
+        nameTo: "Pedro",
+        cpfTo: 1,
+        descriptionPayer: "Saída",
+        descriptionReceiver: "Entrada"
+    };
+
+    const accountsJSONContent: any = data.toString();
+    const database = JSON.parse(accountsJSONContent);
+    for (let user of database.accounts) {
+        if (user.name === newTransfer.nameFrom && user.cpf === newTransfer.cpfFrom) {
+            user.accountBalance = user.accountBalance - newTransfer.value;
+            console.log("Seu novo saldo é: ", user.accountBalance);
+            const newStatementInput: statementInput = {
+                value: -newTransfer.value,
+                date: newTransfer.date,
+                description: newTransfer.descriptionPayer,
+            };
+            user.statement.push(newStatementInput);    
+            const newDatabase = JSON.stringify(database);
+            createAcount(newDatabase);
+        } else if (user.name === newTransfer.nameTo && user.cpf === newTransfer.cpfTo) {
+            user.accountBalance = user.accountBalance + newTransfer.value;
+            
+            const newStatementInput: statementInput = {
+                value: newTransfer.value,
+                date: newTransfer.date,
+                description: newTransfer.descriptionReceiver,
+            };
+            user.statement.push(newStatementInput);
+            const newDatabase = JSON.stringify(database);
+            createAcount(newDatabase);
+        } else {
+            console.log("Conta bancária não encontrada.");
+        };
+    };
+};
+
+readFile (jsonFile, performTransfer);

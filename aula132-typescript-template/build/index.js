@@ -146,7 +146,7 @@ const payBill = (err, data) => {
             ;
         }
         else {
-            console.log("Saldo insuficiente");
+            console.log("Saldo insuficiente.");
             return;
         }
         ;
@@ -158,5 +158,54 @@ const payBill = (err, data) => {
     ;
     console.log("Conta bancária não encontrada.");
 };
-fs_1.readFile(jsonFile, payBill);
+const performTransfer = (err, data) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    ;
+    const newTransfer = {
+        nameFrom: "Severo",
+        cpfFrom: 2,
+        value: 7,
+        date: moment(),
+        nameTo: "Pedro",
+        cpfTo: 1,
+        descriptionPayer: "Saída",
+        descriptionReceiver: "Entrada"
+    };
+    const accountsJSONContent = data.toString();
+    const database = JSON.parse(accountsJSONContent);
+    for (let user of database.accounts) {
+        if (user.name === newTransfer.nameFrom && user.cpf === newTransfer.cpfFrom) {
+            user.accountBalance = user.accountBalance - newTransfer.value;
+            console.log("Seu novo saldo é: ", user.accountBalance);
+            const newStatementInput = {
+                value: -newTransfer.value,
+                date: newTransfer.date,
+                description: newTransfer.descriptionPayer,
+            };
+            user.statement.push(newStatementInput);
+            const newDatabase = JSON.stringify(database);
+            createAcount(newDatabase);
+        }
+        else if (user.name === newTransfer.nameTo && user.cpf === newTransfer.cpfTo) {
+            user.accountBalance = user.accountBalance + newTransfer.value;
+            const newStatementInput = {
+                value: newTransfer.value,
+                date: newTransfer.date,
+                description: newTransfer.descriptionReceiver,
+            };
+            user.statement.push(newStatementInput);
+            const newDatabase = JSON.stringify(database);
+            createAcount(newDatabase);
+        }
+        else {
+            console.log("Conta bancária não encontrada.");
+        }
+        ;
+    }
+    ;
+};
+fs_1.readFile(jsonFile, performTransfer);
 //# sourceMappingURL=index.js.map
